@@ -49,7 +49,7 @@ class DOIToolApp:
         # 说明文字
         desc_label = ttk.Label(
             main_frame,
-            text="选择包含 Title、Journal、Year 列的 Excel 文件，自动查询并补齐 DOI",
+            text="选择包含 Title、Journal、Year 列的 Excel 文件（列名不区分大小写）",
             font=("Microsoft YaHei", 9)
         )
         desc_label.pack(pady=(0, 10))
@@ -209,15 +209,29 @@ class DOIToolApp:
             # 获取表头
             headers = [cell.value for cell in sheet[1]]
             
-            # 查找必要的列
-            try:
-                title_col = headers.index("Title") + 1
-                journal_col = headers.index("Journal") + 1
-                year_col = headers.index("Year") + 1
-            except ValueError as e:
+            # 查找必要的列（不区分大小写）
+            def find_column(name):
+                """查找列索引，忽略大小写"""
+                for i, h in enumerate(headers):
+                    if h and h.lower() == name.lower():
+                        return i + 1
+                return None
+            
+            title_col = find_column("Title")
+            journal_col = find_column("Journal")
+            year_col = find_column("Year")
+            
+            if not all([title_col, journal_col, year_col]):
+                missing = []
+                if not title_col:
+                    missing.append("Title")
+                if not journal_col:
+                    missing.append("Journal")
+                if not year_col:
+                    missing.append("Year")
                 self.root.after(0, lambda: messagebox.showerror(
                     "错误", 
-                    "Excel 文件必须包含 Title、Journal、Year 列！\n"
+                    f"Excel 文件缺少必要的列: {', '.join(missing)}\n"
                     f"当前表头: {headers}"
                 ))
                 return
