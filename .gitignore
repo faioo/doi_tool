@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Excel 测试文件
+*.xlsx
+*.xls
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# 归档文件
+*.zip
+
