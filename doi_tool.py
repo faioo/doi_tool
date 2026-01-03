@@ -117,16 +117,25 @@ class DOIToolApp:
         
         # 按钮区域
         btn_frame = ttk.Frame(main_frame)
-        btn_frame.pack(fill=tk.X)
+        btn_frame.pack(fill=tk.X, pady=(5, 0))
         
-        # 开始处理按钮
-        self.start_btn = ttk.Button(
+        # 开始处理按钮 - 使用自定义样式使其更醒目
+        self.start_btn = tk.Button(
             btn_frame,
-            text="开始处理",
+            text="▶ 开始处理",
             command=self.start_process,
-            state=tk.DISABLED
+            state=tk.DISABLED,
+            font=("Microsoft YaHei", 12, "bold"),
+            bg="#4CAF50",
+            fg="white",
+            activebackground="#45a049",
+            activeforeground="white",
+            relief=tk.RAISED,
+            cursor="hand2",
+            padx=20,
+            pady=8
         )
-        self.start_btn.pack(side=tk.RIGHT)
+        self.start_btn.pack(fill=tk.X)
         
     def select_file(self):
         """打开文件选择对话框"""
@@ -142,7 +151,7 @@ class DOIToolApp:
         if file_path:
             self.file_path.set(file_path)
             self.file_label.config(foreground="black")
-            self.start_btn.config(state=tk.NORMAL)
+            self.start_btn.config(state=tk.NORMAL, bg="#4CAF50")
             self.log_message(f"已选择文件: {os.path.basename(file_path)}")
             
     def log_message(self, message):
@@ -213,7 +222,7 @@ class DOIToolApp:
                 ))
                 return
             
-            # 添加 DOI 列
+            # 在最后追加 DOI 列
             doi_col = len(headers) + 1
             sheet.cell(row=1, column=doi_col, value="DOI")
             
@@ -228,6 +237,7 @@ class DOIToolApp:
             for i, row in enumerate(sheet.iter_rows(min_row=2, max_row=sheet.max_row), 1):
                 if not self.is_processing:
                     self.log_message("处理已取消")
+                    workbook.close()
                     return
                     
                 title = sheet.cell(row=i+1, column=title_col).value or ""
@@ -242,7 +252,7 @@ class DOIToolApp:
                 # 查询 DOI
                 doi = self.get_doi(title, journal, year)
                 
-                # 写入结果
+                # 写入 DOI 到最后一列
                 sheet.cell(row=i+1, column=doi_col, value=doi)
                 
                 if doi.startswith("Error") or doi == "Timeout":
@@ -253,7 +263,7 @@ class DOIToolApp:
                 # 更新进度
                 self.root.after(0, lambda c=i, t=total_rows: self.update_progress(c, t))
             
-            # 保存文件
+            # 保存文件（保留原有所有数据，仅追加DOI列）
             self.log_message(f"正在保存文件...")
             workbook.save(output_path)
             workbook.close()
@@ -270,7 +280,7 @@ class DOIToolApp:
     def on_complete(self, output_path, total, success, errors):
         """处理完成后的回调"""
         self.is_processing = False
-        self.start_btn.config(text="开始处理", state=tk.NORMAL)
+        self.start_btn.config(text="▶ 开始处理", state=tk.NORMAL, bg="#4CAF50")
         self.select_btn.config(state=tk.NORMAL)
         
         not_found = total - success - errors
@@ -294,7 +304,7 @@ class DOIToolApp:
     def reset_ui(self):
         """重置界面状态"""
         self.is_processing = False
-        self.start_btn.config(text="开始处理", state=tk.NORMAL)
+        self.start_btn.config(text="▶ 开始处理", state=tk.NORMAL, bg="#4CAF50")
         self.select_btn.config(state=tk.NORMAL)
         self.progress_var.set(0)
         self.progress_label.config(text="等待开始...")
@@ -304,7 +314,7 @@ class DOIToolApp:
         if self.is_processing:
             # 取消处理
             self.is_processing = False
-            self.start_btn.config(text="开始处理")
+            self.start_btn.config(text="▶ 开始处理", bg="#4CAF50")
             return
             
         file_path = self.file_path.get()
@@ -319,7 +329,7 @@ class DOIToolApp:
             
         # 开始处理
         self.is_processing = True
-        self.start_btn.config(text="取消处理")
+        self.start_btn.config(text="■ 取消处理", bg="#f44336")
         self.select_btn.config(state=tk.DISABLED)
         self.progress_var.set(0)
         
