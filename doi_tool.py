@@ -16,11 +16,11 @@ class DOIToolApp:
     def __init__(self, root):
         self.root = root
         self.root.title("DOI 查询工具")
-        self.root.geometry("600x450")
+        self.root.geometry("600x520")
         self.root.resizable(True, True)
         
         # 设置最小窗口尺寸
-        self.root.minsize(500, 400)
+        self.root.minsize(500, 480)
         
         # 文件路径变量
         self.file_path = tk.StringVar()
@@ -52,11 +52,11 @@ class DOIToolApp:
             text="选择包含 Title、Journal、Year 列的 Excel 文件，自动查询并补齐 DOI",
             font=("Microsoft YaHei", 9)
         )
-        desc_label.pack(pady=(0, 20))
+        desc_label.pack(pady=(0, 10))
         
         # 文件选择区域
-        file_frame = ttk.LabelFrame(main_frame, text="文件选择", padding="10")
-        file_frame.pack(fill=tk.X, pady=(0, 15))
+        file_frame = ttk.LabelFrame(main_frame, text="文件选择", padding="8")
+        file_frame.pack(fill=tk.X, pady=(0, 10))
         
         # 文件路径显示
         self.file_label = ttk.Label(
@@ -76,8 +76,8 @@ class DOIToolApp:
         self.select_btn.pack(side=tk.RIGHT, padx=(10, 0))
         
         # 进度区域
-        progress_frame = ttk.LabelFrame(main_frame, text="处理进度", padding="10")
-        progress_frame.pack(fill=tk.X, pady=(0, 15))
+        progress_frame = ttk.LabelFrame(main_frame, text="处理进度", padding="8")
+        progress_frame.pack(fill=tk.X, pady=(0, 10))
         
         # 进度条
         self.progress_var = tk.DoubleVar()
@@ -98,8 +98,8 @@ class DOIToolApp:
         self.progress_label.pack(anchor=tk.W)
         
         # 状态日志区域
-        log_frame = ttk.LabelFrame(main_frame, text="处理日志", padding="10")
-        log_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 15))
+        log_frame = ttk.LabelFrame(main_frame, text="处理日志", padding="8")
+        log_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
         
         # 创建文本框和滚动条
         log_scroll = ttk.Scrollbar(log_frame)
